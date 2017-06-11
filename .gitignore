@@ -1,0 +1,12 @@
+# Text files
+*.txt
+# C/C++ output
+*.o
+# Linux module build
+**/*.mod
+**/*.mod.*
+*.order
+*.ko
+*.ko.*
+*.o.*
+*.symvers
