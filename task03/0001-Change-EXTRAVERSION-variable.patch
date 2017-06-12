@@ -1,0 +1,26 @@
+From f916a82409639ff4595e886e88cdb75916c5a557 Mon Sep 17 00:00:00 2001
+From: Vladimir Petrigo <vladimir.petrigo@gmail.com>
+Date: Mon, 12 Jun 2017 20:55:57 +0300
+Subject: [PATCH] Change EXTRAVERSION variable
+
+Signed-off-by: Vladimir Petrigo <vladimir.petrigo@gmail.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 83f6d9972cab..64e000eb5e3b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 4
+ PATCHLEVEL = 12
+ SUBLEVEL = 0
+-EXTRAVERSION = -rc5
++EXTRAVERSION = -eudyptula
+ NAME = Fearless Coyote
+ 
+ # *DOCUMENTATION*
+-- 
+2.11.0
+
