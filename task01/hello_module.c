@@ -5,7 +5,6 @@
 int init_module(void)
 {
 	pr_debug("Hello World!\n");
-
 	return 0;
 }
 
