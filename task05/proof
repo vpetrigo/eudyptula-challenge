@@ -1,0 +1,10 @@
+[342678.140151] usb 1-1: new high-speed USB device number 12 using ehci-pci
+[342678.710026] usb 1-1: New USB device found, idVendor=046d, idProduct=0825
+[342678.710028] usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=2
+[342678.710029] usb 1-1: SerialNumber: F11462E0
+[342678.712118] Hello Keyboard!
+[342678.712143] Keyboard ID 12, path 1
+[342678.712144] Manuf (null), serial F11462E0, product (null)
+[342678.712179] Hello Keyboard!
+[342678.712180] Keyboard ID 12, path 1
+[342678.712180] Manuf (null), serial F11462E0, product (null)
