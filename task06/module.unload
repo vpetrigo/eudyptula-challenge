@@ -1,0 +1,9 @@
+#!/bin/bash
+MODNAME="hello_module"
+DEVNAME="eudyptula"
+
+lsmod | grep $MODNAME
+[[ -z `lsmod | grep -e "^$MODNAME\b"` ]] && exit 1
+
+rmmod $MODNAME
+rm -f /dev/$DEVNAME

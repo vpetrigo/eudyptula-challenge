@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DEVNAME="eudyptula"
+MODNAME="hello_module.ko"
+
+insmod $MODNAME || exit 1
+
+MAJOR_NUM=`awk -v m=$DEVNAME '$2 == m { print $1; }' /proc/devices`
+
+rm -f /dev/${DEVNAME}
+echo "Create $DEVNAME file under /dev directory..."
+mknod /dev/${DEVNAME} c $MAJOR_NUM 0
+echo "Done."
