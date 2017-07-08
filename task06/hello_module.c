@@ -22,14 +22,14 @@ struct hello_chrdev {
 	dev_t devno;
 };
 
-struct file_operations hello_chrdev_ops = {
+static const struct file_operations hello_chrdev_ops = {
 	.owner = THIS_MODULE,
 	.open = hello_open,
 	.read = hello_read,
 	.write = hello_write
 };
 
-struct hello_chrdev hello_dev;
+static struct hello_chrdev hello_dev;
 
 int hello_open(struct inode *inode, struct file *filp)
 {
