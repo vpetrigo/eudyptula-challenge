@@ -3,6 +3,7 @@
 #include <linux/printk.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
+#include <linux/miscdevice.h>
 #include <linux/uaccess.h>
 #include <asm/string.h>
 
@@ -12,41 +13,41 @@ MODULE_LICENSE("Dual BSD/GPL");
 #define FIRSTMINOR 0
 #define DEV_COUNT 1
 #define DEV_NAME "eudyptula"
+#define BUF_SIZE 32
 
-int hello_open(struct inode *, struct file *);
-ssize_t hello_read(struct file *, char __user *, size_t, loff_t *);
-ssize_t hello_write(struct file *, const char __user *, size_t, loff_t *);
+static int hello_open(struct inode *, struct file *);
+static ssize_t hello_read(struct file *, char __user *, size_t, loff_t *);
+static ssize_t hello_write(struct file *, const char __user *, size_t, loff_t *);
 
-struct hello_chrdev {
-	struct cdev hello_cdev;
-	dev_t devno;
-};
-
-static const struct file_operations hello_chrdev_ops = {
+static const struct file_operations hello_misc_ops = {
 	.owner = THIS_MODULE,
 	.open = hello_open,
 	.read = hello_read,
 	.write = hello_write
 };
 
-static struct hello_chrdev hello_dev;
+static struct miscdevice hello_mdev = {
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = DEV_NAME,
+	.fops = &hello_misc_ops
+};
 
-int hello_open(struct inode *inode, struct file *filp)
+static int hello_open(struct inode *inode, struct file *filp)
 {
-	filp->private_data = container_of(inode->i_cdev, 
-					struct hello_chrdev, hello_cdev);
+	pr_debug("hello_module: hello open\n");
+	filp->private_data = &inode->i_rdev;
+	pr_debug("hello_module: open miscdevice with minor ID %d\n", MINOR(inode->i_rdev));
 
 	return 0;
 }
 
-ssize_t hello_read(struct file *filp, char __user *to, size_t from, loff_t *pos)
+static ssize_t hello_read(struct file *filp, char __user *to, size_t length, loff_t *pos)
 {
-	char buf[32] = {'\0'};
-	struct hello_chrdev *phello = filp->private_data;
+	char buf[BUF_SIZE] = {'\0'};
+	const dev_t *devp = filp->private_data;
 	ssize_t result = 0;
 	
-	result = snprintf(buf, sizeof(buf), "%d %d", MAJOR(phello->devno), 
-					MINOR(phello->devno));
+	result = snprintf(buf, sizeof(buf), "%d\n", MINOR(*devp));
 
 	if (result < 0)
 		goto fail;	
@@ -60,58 +61,46 @@ fail:
 	return result;
 }
 
-ssize_t hello_write(struct file *filp, const char __user *from, size_t to, loff_t *pos)
+static ssize_t hello_write(struct file *filp, const char __user *from, size_t length, loff_t *pos)
 {
-	char buf[32] = {'\0'};
-	struct hello_chrdev *phello = filp->private_data;
-	size_t devno_len = 0;
-	size_t user_len = 0;
+	char buf[BUF_SIZE] = {'\0'};
+	const dev_t *devp = filp->private_data;	
 	int result = -EINVAL;
+	size_t devno_len = snprintf(buf, sizeof(buf), "%d", MINOR(*devp));	
 
 	pr_debug("hello: User input %s\n", from);
-	snprintf(buf, sizeof(buf), "%d %d", MAJOR(phello->devno),
-					MINOR(phello->devno));	
-	devno_len = strlen(buf);
-	user_len = strlen(from);
 	result = memcmp(from, buf, 
-			(devno_len > user_len) ? user_len : devno_len);
+			(devno_len > length) ? length : devno_len);
 
 	if (result != 0)
+	{
+		result = -EINVAL;
 		goto fail;
+	}
 
 	result = devno_len;
 fail:
 	return result;
 }
 
-int __init hello_init(void)
+static int hello_init(void)
 {
-	int result = alloc_chrdev_region(&hello_dev.devno, FIRSTMINOR, 
-					DEV_COUNT, DEV_NAME);
+	int retval = misc_register(&hello_mdev);
 
-	if (result < 0) {
+	if (retval < 0)
 		goto fail;
-	}
-
-	cdev_init(&hello_dev.hello_cdev, &hello_chrdev_ops);
-	result = cdev_add(&hello_dev.hello_cdev, hello_dev.devno, DEV_COUNT);
-
-	if (result < 0) {
-		goto fail;
-	}
 
 	pr_debug("hello: Hello World!\n");
 
 	return 0;
 
 fail:
-	return result;
+	return retval;
 }
 
-void __exit hello_exit(void)
+static void hello_exit(void)
 {
-	unregister_chrdev_region(hello_dev.devno, DEV_COUNT);
-	cdev_del(&hello_dev.hello_cdev);
+	misc_deregister(&hello_mdev);
 	pr_debug("hello: Goodbye!\n");
 }
 

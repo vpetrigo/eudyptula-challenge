@@ -1,5 +1,5 @@
 obj-m += hello_module.o
-ccflags-y := -DDEBUG
+ccflags-y := -DDEBUG -std=gnu99
 KDIR ?= /lib/modules/$(shell uname -r)/build
 PWD = $(shell pwd)
 
