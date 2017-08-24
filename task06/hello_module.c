@@ -38,13 +38,13 @@ static ssize_t hello_read(struct file *filp, char __user *to, size_t length, lof
 	result = snprintf(buf, sizeof(buf), "%d\n", hello_mdev.minor);
 
 	if (result < 0 || result > length)
-    {
-        result = -EFAULT;
+	{
+		result = -EFAULT;
 		goto fail;
-    }
+	}
 
 	if (copy_to_user(to, buf, result))
-    {
+	{
 		result = -EFAULT;
 		goto fail;
 	}	
@@ -60,8 +60,7 @@ static ssize_t hello_write(struct file *filp, const char __user *from, size_t le
 	size_t devno_len = snprintf(buf, sizeof(buf), "%d", hello_mdev.minor);	
 
 	pr_debug("hello: User input %s\n", from);
-	result = memcmp(from, buf, 
-			(devno_len > length) ? length : devno_len);
+	result = memcmp(from, buf, (devno_len > length) ? length : devno_len);
 
 	if (result != 0)
 	{
