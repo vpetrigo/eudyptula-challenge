@@ -1,6 +1,6 @@
-#include <linux/module.h>
-#include <linux/kernel.h>
 #include <linux/delay.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
 #include <linux/slab.h>
 
 int do_work(int *my_int, int retval)
@@ -30,10 +30,7 @@ int my_init(void)
 	return x;
 }
 
-void my_exit(void)
-{
-	return;
-}
+void my_exit(void) { return; }
 
 module_init(my_init);
 module_exit(my_exit);
