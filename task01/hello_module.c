@@ -8,4 +8,7 @@ int init_module(void)
 	return 0;
 }
 
-void cleanup_module(void) { pr_debug("Goodbye!\n"); }
+void cleanup_module(void)
+{
+	pr_debug("Goodbye!\n");
+}

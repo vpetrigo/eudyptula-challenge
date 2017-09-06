@@ -30,7 +30,10 @@ int my_init(void)
 	return x;
 }
 
-void my_exit(void) { return; }
+void my_exit(void)
+{
+	return;
+}
 
 module_init(my_init);
 module_exit(my_exit);
