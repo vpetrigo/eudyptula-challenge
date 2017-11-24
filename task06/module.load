@@ -5,9 +5,15 @@ MODNAME="hello_module.ko"
 
 insmod $MODNAME || exit 1
 
-MAJOR_NUM=`awk -v m=$DEVNAME '$2 == m { print $1; }' /proc/devices`
+# MAJOR_NUM=`awk -v m=$DEVNAME '$2 == m { print $1; }' /proc/devices`
+DEV_NUM=`cat /sys/class/misc/eudyptula/dev`
+IFS=':' read -a ID_ARRAY <<< "$DEV_NUM"
+MAJOR_NUM=${ID_ARRAY[0]}
+MINOR_NUM=${ID_ARRAY[1]}
+
+echo "$DEVNAME major number is - ${MAJOR_NUM}"
 
 rm -f /dev/${DEVNAME}
 echo "Create $DEVNAME file under /dev directory..."
-mknod /dev/${DEVNAME} c $MAJOR_NUM 0
+mknod /dev/${DEVNAME} c $MAJOR_NUM $MINOR_NUM
 echo "Done."
