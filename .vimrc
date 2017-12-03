@@ -4,4 +4,4 @@ set shiftwidth=8
 set noexpandtab
 set tw=80
 
-let g:syntastic_c_include_dirs = ['/lib/modules/4.11.4/build/include/']
+let g:syntastic_c_include_dirs = ['/usr/src/linux-headers-`uname -r`-generic/include']
