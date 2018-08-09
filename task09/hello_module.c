@@ -1,12 +1,12 @@
+#include <linux/init.h>
 #include <linux/jiffies.h>
 #include <linux/kernel.h>
+#include <linux/kobject.h>
 #include <linux/module.h>
 #include <linux/printk.h>
 #include <linux/spinlock.h>
 #include <linux/stat.h>
 #include <linux/sysfs.h>
-#include <linux/init.h>
-#include <linux/kobject.h>
 
 MODULE_AUTHOR("Vladimir Petrigo");
 MODULE_DESCRIPTION("Hello module with sysfs");
@@ -25,13 +25,18 @@ struct foo {
 	rwlock_t lock;
 };
 
-static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
-static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count);
+static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr,
+			char *buf);
+static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr,
+			 const char *buf, size_t count);
 
-static ssize_t id_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
-static ssize_t id_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count);
+static ssize_t id_show(struct kobject *kobj, struct kobj_attribute *attr,
+		       char *buf);
+static ssize_t id_store(struct kobject *kobj, struct kobj_attribute *attr,
+			const char *buf, size_t count);
 
-static ssize_t jiffies_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
+static ssize_t jiffies_show(struct kobject *kobj, struct kobj_attribute *attr,
+			    char *buf);
 
 static struct foo foo;
 
@@ -40,37 +45,42 @@ static struct kobj_attribute id_attribute = __ATTR_RW(id);
 static struct kobj_attribute jiffies_attribute = __ATTR_RO(jiffies);
 
 static struct attribute *attrs[] = {
-	&foo_attribute.attr,
-	&id_attribute.attr,
-	&jiffies_attribute.attr,
-	NULL /* need to NULL terminate the list of attributes */
+    &foo_attribute.attr, &id_attribute.attr, &jiffies_attribute.attr,
+    NULL /* need to NULL terminate the list of attributes */
 };
 
-static struct attribute_group attr_group = {
-	.attrs = attrs
-};
+static struct attribute_group attr_group = {.attrs = attrs};
 
 static struct kobject *hello_kobj;
 
-static ssize_t id_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+static ssize_t id_show(struct kobject *kobj, struct kobj_attribute *attr,
+		       char *buf)
+{
 	return sprintf(buf, "%s\n", assigned_id);
 }
 
-static ssize_t id_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
+static ssize_t id_store(struct kobject *kobj, struct kobj_attribute *attr,
+			const char *buf, size_t count)
+{
 	ssize_t result = -EINVAL;
 
-	if (count == ASSIGNED_ID_SIZE && strncmp(buf, assigned_id, ASSIGNED_ID_SIZE) == 0) {
+	if (count == ASSIGNED_ID_SIZE &&
+	    strncmp(buf, assigned_id, ASSIGNED_ID_SIZE) == 0) {
 		result = ASSIGNED_ID_SIZE;
 	}
 
 	return result;
 }
 
-static ssize_t jiffies_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+static ssize_t jiffies_show(struct kobject *kobj, struct kobj_attribute *attr,
+			    char *buf)
+{
 	return sprintf(buf, "%lu\n", jiffies);
 }
 
-static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr,
+			char *buf)
+{
 	ssize_t result;
 
 	read_lock(&foo.lock);
@@ -80,7 +90,8 @@ static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr, char 
 	return result;
 }
 
-static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
+static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr,
+			 const char *buf, size_t count)
 {
 	ssize_t result;
 
