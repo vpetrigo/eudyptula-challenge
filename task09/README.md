@@ -31,6 +31,10 @@ Useful links
 ------------
 
 - [Zen of kobjects][2]
+- [kobject][3]
+- [kset-example][4]
 
 [1]: https://www.kernel.org/doc/Documentation/kobject.txt 
 [2]: https://lwn.net/Articles/51437/
+[3]: https://github.com/torvalds/linux/blob/master/Documentation/kobject.txt
+[4]: https://github.com/torvalds/linux/blob/master/samples/kobject/kset-example.c
