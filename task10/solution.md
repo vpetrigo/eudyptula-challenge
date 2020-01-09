@@ -1,0 +1,2 @@
+- [Mail list](https://marc.info/?l=linux-iio&m=155320293509850&w=2)
+- [Commit in the IO subsystem](https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/commit/?h=togreg&id=bf2da9707900299489ea74c48295e5c99c28b655)
